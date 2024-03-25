@@ -1,0 +1,40 @@
+public class ThreadsGestioneServizioChat implements Runnable
+{
+    private int nrMaxConnessioni;
+    private List lista;
+    private ThreadChatConnessioni[] listaConnessioni;
+    Thread me;
+    private ServerSocket serverChat;
+
+    public ThreadsGestioneServizioChat(int numeroMaxConnessioni, List lista)
+    {
+        this.nrMaxConnessioni=nrMaxConnessioni -1;
+        this.lista=lista;
+        this.listaConnessioni=new ThreadChatConnessioni[this.nrMaxConnessioni];
+        me=new Thread(this);
+        me.start();
+    }
+
+    public void run ()
+    {
+        boolean conitnua = true;
+        try{
+            serverChat=new ServerSocket(6789);
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null,"Imposibile instanziare il server");
+            continua=false;  <
+        }
+        if(conitnua){
+            try{
+                for(int xx=0; xx<nrMaxConnessioni; xx++){
+                    Socket tempo=null;
+                    tempo= serverChat.accept();
+                    listaConnessioni[xx]=new ThreadChatConnessioni(this,tempo);
+                }
+                serverChat.close();
+            } catch(Exception e){
+                JOptionPane.showMessageDialog(null,"impossibile instanziare server chat");
+            }
+        }
+    }
+} 
